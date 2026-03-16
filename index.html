@@ -221,11 +221,17 @@
 
   <div id="crop-modal" class="fixed inset-0 bg-black bg-opacity-80 z-[100] hidden flex items-center justify-center p-4"><div class="bg-white p-4 rounded-lg w-full max-w-3xl"><h3 class="text-lg font-bold mb-2 text-center">Sesuaikan Gambar</h3><div class="w-full h-64 md:h-96 bg-gray-200"><img id="crop-image" src="" class="max-w-full max-h-full"></div><div class="mt-4 flex justify-end space-x-2"><button onclick="closeCropModal()" class="px-4 py-2 bg-gray-300 rounded font-bold">Batal</button><button onclick="executeCrop()" class="px-4 py-2 bg-blue-600 text-white rounded font-bold">Potong</button></div></div></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <script>
+ 
     // =================================================================
     // MASUKKAN URL GOOGLE APPS SCRIPT ANDA (YANG BERAKHIRAN /exec) DI SINI
     // =================================================================
-    const GAS_URL = "https://script.google.com/a/macros/admin.sma.belajar.id/s/AKfycbwL8zOL65O7spQgastSNZieYNo4ubygx65KIgZZir3IZji6DFkDvujbARBNefp5esHP_Q/exec"; 
+    const GAS_URL = "https://script.google.com/a/macros/admin.sma.belajar.id/s/AKfycbwpTFR0HS-yqBqsr7LSe0dxgIP1PCGslSsWmFsP3Aw85WjiGzCMW8ljsA7qxE7Mv0eQfg/exec"; 
+
+    //https://script.google.com/macros/s/AKfycbwpTFR0HS-yqBqsr7LSe0dxgIP1PCGslSsWmFsP3Aw85WjiGzCMW8ljsA7qxE7Mv0eQfg/exec
+
 
     let cropper = null; let currentPreviewId = ''; let currentInputId = ''; let currentCropWidth = 800;
     let globalData = { tim: [], slide: [] }; let slideIndex = 0; let slideTimer = null; let quillEditor; 
