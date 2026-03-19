@@ -85,7 +85,7 @@
           <div class="bg-white p-3 md:p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col items-center text-center"><span class="text-2xl md:text-3xl mb-1 text-blue-600"><i class="fas fa-file-contract"></i></span><p class="text-[10px] md:text-xs text-gray-500 font-bold uppercase mb-1">SK Kemenkumham</p><p id="t-sk" class="font-bold text-gray-900 text-xs md:text-sm">-</p></div>
           <div class="bg-white p-3 md:p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col items-center text-center"><span class="text-2xl md:text-3xl mb-1 text-blue-600"><i class="fas fa-barcode"></i></span><p class="text-[10px] md:text-xs text-gray-500 font-bold uppercase mb-1">Nomor Induk Berusaha</p><p id="t-nib1" class="font-bold text-gray-900 text-xs md:text-sm">-</p></div>
           <div class="bg-white p-3 md:p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col items-center text-center"><span class="text-2xl md:text-3xl mb-1 text-blue-600"><i class="fas fa-shield-alt"></i></span><p class="text-[10px] md:text-xs text-gray-500 font-bold uppercase mb-1">TDPSE Komdigi</p><p id="t-pse" class="font-bold text-gray-900 text-xs md:text-sm">-</p></div>
-          <div class="bg-white p-3 md:p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col items-center text-center"><span class="text-2xl md:text-3xl mb-1 text-blue-600"><i class="fas fa-qrcode"></i></span><p class="text-[10px] md:text-xs text-gray-500 font-bold uppercase mb-1">Izin PB UMKU</p><p id="t-nib2" class="font-bold text-gray-900 text-xs md:text-sm">-</p></div>
+          <div class="bg-white p-3 md:p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col items-center text-center"><span class="text-2xl md:text-3xl mb-1 text-blue-600"><i class="fas fa-qrcode"></i></span><p class="text-[10px] md:text-xs text-gray-500 font-bold uppercase mb-1">Nomor PB UMKU</p><p id="t-nib2" class="font-bold text-gray-900 text-xs md:text-sm">-</p></div>
         </div>
       </div>
     </section>
@@ -187,7 +187,7 @@
             <div><label class="block font-bold text-xs mb-1">SK Kemenkumham</label><input type="text" id="i-sk" class="w-full border rounded p-2 text-sm"></div>
             <div><label class="block font-bold text-xs mb-1">Nomor Induk Berusaha</label><input type="text" id="i-nib1" class="w-full border rounded p-2 text-sm"></div>
             <div><label class="block font-bold text-xs mb-1">TDPSE Komdigi</label><input type="text" id="i-pse" class="w-full border rounded p-2 text-sm"></div>
-            <div><label class="block font-bold text-xs mb-1">Izin PB UMKU</label><input type="text" id="i-nib2" class="w-full border rounded p-2 text-sm"></div>
+            <div><label class="block font-bold text-xs mb-1">No. PB UMKU</label><input type="text" id="i-nib2" class="w-full border rounded p-2 text-sm"></div>
           </div>
           <hr class="my-4">
           <div><label class="block font-bold text-sm mb-1">Visi</label><textarea id="i-visi" class="w-full border rounded p-2 text-sm" rows="3" required></textarea></div>
@@ -267,8 +267,44 @@
     });
 
     async function reloadData(showLoading = false) {
-      if(showLoading) Swal.fire({ title: 'Menarik Data...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-      try { const data = await apiCall('getData'); renderData(data); } catch(err) { Swal.close(); Swal.fire('Koneksi Gagal', 'Pastikan URL GAS sudah benar. Pesan: ' + err.message, 'error'); }
+        let timerInterval; // Siapkan variabel untuk menyimpan timer
+        
+        if(showLoading) {
+            let timeLeft = 5; // Mulai dari 5 detik
+            Swal.fire({
+                title: `Memuat Data... (${timeLeft})`,
+                html: 'Menghubungkan ke server',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                    // Buat hitung mundur setiap 1000 milidetik (1 detik)
+                    timerInterval = setInterval(() => {
+                        timeLeft--;
+                        if (timeLeft > 0) {
+                            Swal.getTitle().textContent = `Memuat Data... (${timeLeft})`;
+                        } else {
+                            // Jika waktu habis tapi data belum selesai ditarik
+                            Swal.getTitle().textContent = "Tunggu sebentar...";
+                            Swal.getHtmlContainer().textContent = "Sedang menyinkronkan data yang cukup besar.";
+                            clearInterval(timerInterval);
+                        }
+                    }, 1000);
+                },
+                willClose: () => {
+                    clearInterval(timerInterval); // Bersihkan memori saat popup tutup
+                }
+            });
+        }
+        
+        try { 
+            const data = await apiCall('getData'); 
+            if(timerInterval) clearInterval(timerInterval); // Hentikan timer jika data selesai ditarik
+            renderData(data); 
+        } catch(err) { 
+            if(timerInterval) clearInterval(timerInterval); // Hentikan timer jika error
+            Swal.close(); 
+            Swal.fire('Koneksi Gagal', 'Pastikan URL GAS sudah benar. Pesan: ' + err.message, 'error'); 
+        }
     }
 
     function renderData(data) {
