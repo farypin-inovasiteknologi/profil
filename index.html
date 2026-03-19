@@ -313,17 +313,16 @@
     async function saveProfil(e) { e.preventDefault(); setLoadingBtn('btn-profil', true); const data = { nama_perusahaan: document.getElementById('i-nama').value, visi: document.getElementById('i-visi').value, misi: document.getElementById('i-misi').value, deskripsi: quillEditor.root.innerHTML, sk: document.getElementById('i-sk').value, pse: document.getElementById('i-pse').value, nib1: document.getElementById('i-nib1').value, nib2: document.getElementById('i-nib2').value, logo_base64: document.getElementById('input-logo-base64').value }; try { const r = await apiCall('updateProfil', data); alertRes(r, 'btn-profil'); reloadData(); } catch(err) { showErr(err); } }
     async function saveKontak(e) { e.preventDefault(); setLoadingBtn('btn-kontak', true); const data = { email: document.getElementById('i-email').value, alamat: document.getElementById('i-alamat').value, wa1: document.getElementById('i-wa1').value, wa2: document.getElementById('i-wa2').value, web: document.getElementById('i-web').value, fb: document.getElementById('i-fb').value, ig: document.getElementById('i-ig').value, x: document.getElementById('i-x').value, tiktok: document.getElementById('i-tiktok').value, yt: document.getElementById('i-yt').value, tg: document.getElementById('i-tg').value }; try { const r = await apiCall('updateKontak', data); alertRes(r, 'btn-kontak'); reloadData(); } catch(err) { showErr(err); } }
 
-    async function loginAdmin() { const { value: formValues } = await Swal.fire({ title: 'Login Admin', html: '<input id="swal-user" class="swal2-input" placeholder="User"><input id="swal-pass" class="swal2-input" type="password" placeholder="Pass">', focusConfirm: false, showCancelButton: true, preConfirm: () => [document.getElementById('swal-user').value, document.getElementById('swal-pass').value] }); if (formValues) { Swal.fire({ title: 'Loading...', allowOutsideClick: false, didOpen: () => Swal.showLoading() }); try { const r = await apiCall('login', { user: formValues[0], pass: formValues[1] });
-    if (r.success) {
-    document.getElementById('view-public').classList.add('hidden');
-    
-    // Tampilkan admin dan pastikan mode flex aktif
-    document.getElementById('view-admin').classList.remove('hidden');
-    document.getElementById('view-admin').classList.add('flex'); 
-    
-    Swal.fire({icon: 'success', title: 'Masuk!', timer: 1000, showConfirmButton: false});
-}
+     async function loginAdmin() { const { value: formValues } = await Swal.fire({ title: 'Login Admin', html: '<input id="swal-user" class="swal2-input" placeholder="User"><input id="swal-pass" class="swal2-input" type="password" placeholder="Pass">', focusConfirm: false, showCancelButton: true, preConfirm: () => [document.getElementById('swal-user').value, document.getElementById('swal-pass').value] }); if (formValues) { Swal.fire({ title: 'Loading...', allowOutsideClick: false, didOpen: () => Swal.showLoading() }); try { const r = await apiCall('login', { user: formValues[0], pass: formValues[1] });
+if (r.success) {
+ document.getElementById('view-public').classList.add('hidden');
 
+// Tampilkan admin dan pastikan mode flex aktif
+ document.getElementById('view-admin').classList.remove('hidden');
+ document.getElementById('view-admin').classList.add('flex'); 
+
+Swal.fire({icon: 'success', title: 'Masuk!', timer: 1000, showConfirmButton: false});
+}
 
     function logoutAdmin() {
     // Sembunyikan admin dan bersihkan class flex
